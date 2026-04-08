@@ -2,11 +2,11 @@
   <img src="https://github.com/rafa2403nunez-droid/PyNet/blob/main/Assets/PyNetLogo.png" width="150"/>
 </p>
 
-# 📚 PyNet Script Library
+# 📚 PyNet Library — Navisworks API Context
 
-**Reference library of Python .NET scripts** for BIM automation via the **[PyNet Platform](https://github.com/rafa2403nunez-droid/PyNet)**. These scripts run inside Autodesk Navisworks and Revit through PyNet's embedded **Python.NET** engine.
+**API context and reference scripts for Autodesk Navisworks**, designed for the **[PyNet Platform](https://github.com/rafa2403nunez-droid/PyNet)**. This repo provides Python-style **stubs** of the Navisworks .NET API and example scripts, so that AI models (and developers) have the context they need to generate and understand Navisworks automation code that runs through PyNet's embedded **Python.NET** engine.
 
-> **AI Users:** This README is the primary context source for generating new scripts. Read the execution environment and boilerplate sections before writing any code.
+> **AI Users:** This README and the stub files under `01_Scripts/01_Navisworks/00_Stubs/` are the primary context sources for generating Navisworks scripts. Read the execution environment and boilerplate sections before writing any code.
 
 ---
 
@@ -14,36 +14,26 @@
 
 Scripts run via **Python.NET** (CPython 3.10+ + `pythonnet` — not IronPython). This means standard Python 3 syntax is fully supported, along with the `clr` bridge to access .NET and Autodesk APIs.
 
-| Property | Navisworks | Revit |
-| :--- | :--- | :--- |
-| **Active document** | `doc = __navisworks__` | `doc = DocumentManager.Instance.CurrentDBDocument` |
-| **CLR bridge** | `import clr` | `import clr` |
-| **Standard Python** | ✅ Full Python 3.10+ | ✅ Full Python 3.10+ |
-| **pip packages** | ✅ Available | ✅ Available |
+| Property | Value |
+| :--- | :--- |
+| **Active document** | `doc = Application.ActiveDocument` (from `Autodesk.Navisworks.Api`) |
+| **CLR bridge** | `import clr` |
+| **Standard Python** | ✅ Full Python 3.10+ |
+| **pip packages** | ✅ Available |
 
 **Key rules:**
 - Always call `clr.AddReference(...)` before importing any Autodesk or System namespace.
 - Use `List[T]` from `System.Collections.Generic` when passing collections to .NET methods.
-- All UI dialogs use `System.Windows.Forms.MessageBox`.
-- Wrap Revit write operations in a `Transaction` or `TransactionManager`.
-* **Python / IronPython**  
-* **Autodesk Navisworks API**  
-* **Autodesk Revit API**
-* **Autodesk Civil 3D API / AutoCAD API**  
-* **Autodesk Platform Services (APS)**  
-* **Bentley Microstation API**  
-* **Bentley OpenRoads API**  
+- All UI dialogs use `System.Windows.Forms.MessageBox`.  
 
 ---
 
 ## 📋 Standard Boilerplate
 
-### Navisworks
-
 ```python
 import clr
 import sys
-import os
+from pathlib import Path
 
 clr.AddReference("Autodesk.Navisworks.Api")
 from Autodesk.Navisworks.Api import *
@@ -51,45 +41,25 @@ from Autodesk.Navisworks.Api import *
 clr.AddReference("Autodesk.Navisworks.ComApi")
 from Autodesk.Navisworks.Api.ComApi import *
 
-from System.Collections.Generic import List
+clr.AddReference("Autodesk.Navisworks.Interop.ComApi")
+from Autodesk.Navisworks.Api.Interop.ComApi import *
 
 clr.AddReference("System.Windows.Forms")
-from System.Windows.Forms import *
+clr.AddReference("System.Drawing")
 
-doc = __navisworks__  # type: ignore
+from System.Windows.Forms import *
+from System.Drawing import *
+
+from System.Collections.Generic import List
+
+from Autodesk.Navisworks.Api import Application
+doc = Application.ActiveDocument
 ```
 
 For clash detection, add:
 ```python
 clr.AddReference("Autodesk.Navisworks.Clash")
 from Autodesk.Navisworks.Api.Clash import *
-```
-
-### Revit
-
-```python
-import clr
-
-clr.AddReference('RevitAPI')
-from Autodesk.Revit.DB import *
-from Autodesk.Revit.Exceptions import OperationCanceledException
-
-clr.AddReference('RevitAPIUI')
-from Autodesk.Revit.UI import *
-from Autodesk.Revit.UI.Selection import *
-
-clr.AddReference('RevitServices')
-from RevitServices.Persistence import DocumentManager
-from RevitServices.Transactions import TransactionManager
-
-from System.Collections.Generic import List
-
-clr.AddReference("System.Windows.Forms")
-from System.Windows.Forms import *
-
-doc = DocumentManager.Instance.CurrentDBDocument
-uiapp = DocumentManager.Instance.CurrentUIApplication
-uidoc = uiapp.ActiveUIDocument
 ```
 
 ---
@@ -100,18 +70,32 @@ All scripts follow a class-based pattern with a single entry-point call at the b
 
 ```python
 class FeatureManager:
+    '''
+    Main orchestrator class — coordinates the workflow
+    by calling helper classes and presenting results to the user.
+    Each public method represents a complete user action.
+    '''
     @staticmethod
     def Run(document):
         data = DataProcessor.Process(document)
         DialogManager.ShowResult(data)
 
 class DataProcessor:
+    '''
+    Business logic class — reads and transforms data from
+    the Navisworks document. Returns plain Python objects
+    that the rest of the script can consume.
+    '''
     @staticmethod
     def Process(document):
         # business logic
         return result
 
 class DialogManager:
+    '''
+    UI helper class — displays results or collects user input
+    via System.Windows.Forms dialogs (MessageBox, OpenFileDialog, etc.).
+    '''
     @staticmethod
     def ShowResult(data):
         MessageBox.Show(str(data), "PyNet", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -122,47 +106,50 @@ FeatureManager.Run(doc)
 
 ---
 
-## 📂 Scripts
+## 📂 Repository Structure
 
-### 🔵 Navisworks — `02_Scripts/01_Navisworks/`
+### API Stubs — `01_Scripts/01_Navisworks/00_Stubs/`
 
-Scripts organized into three areas:
+Python-style **stub files** that mirror the Navisworks .NET API surface. These stubs give AI models and IDEs the type information and method signatures needed to generate correct Navisworks code. Covers: `ApplicationParts`, `Automation`, `Bim360`, `Clash`, `ComApi`, `Controls`, `Data`, `DocumentParts`, `Interop`, `Plugins`, `Schema`.
 
-- **Model Management** — open, append, list and publish NWD files using the core Document API.
-- **Search Sets** — create Search Sets from property conditions (`SearchCondition`, `VariantData`, `SearchLocations`).
-- **Clash Detection** — export and import clash test results (CSV), working with `doc.Clash.TestsData.Tests`.
+### Example Scripts — `01_Scripts/01_Navisworks/`
 
-Example — creating a Search Set by property value:
+Working scripts organized into three areas:
+
+- **Model Management** (`01_ModelManagement/`) — open, append, list and publish NWD files using the core Document API.
+- **Search Sets** (`02_SearchSets/`) — create Search Sets from property conditions (`SearchCondition`, `VariantData`, `SearchLocations`).
+- **Clash Detection** (`03_ClashDetection/`) — export, import and rename clash test results, working with `doc.Clash.TestsData.Tests`.
+- **Data Analysis** (`dataAnalysis/`) — chart generation from clash data (bar charts, pie charts, stacked bars).
+
+Example — `SearchSetsManager.CreateSet` from `02_SearchSets/GenerateSearchSets.py`:
 ```python
-searchSet = Search()  # type: ignore
-searchSet.Locations = SearchLocations.DescendantsAndSelf
-searchSet.Selection.SelectAll()
-condition = SearchCondition.HasPropertyByDisplayName("Revit Type", "Clash Test Code")
-conditionValue = condition.EqualValue(VariantData.FromDisplayString(value))
-searchSet.SearchConditions.AddGroup(List[SearchCondition]([conditionValue]))
-```
+class SearchSetsManager():
+    @staticmethod
+    def CreateSet(value, selectionSets):
+        '''
+        Creates a new Search Set filtered by a property value.
+        Searches "Clash Test Code" under both "Revit Type" and "Element"
+        categories (OR logic via separate groups), then registers the
+        resulting set in the document's SelectionSets collection.
+        '''
+        searchSet = Search()
+        searchSet.Locations = SearchLocations.DescendantsAndSelf
+        searchSet.Selection.SelectAll()
 
----
+        # First condition group — match by "Revit Type" category
+        condition = SearchCondition.HasPropertyByDisplayName("Revit Type", "Clash Test Code")
+        conditionValue = condition.EqualValue(VariantData.FromDisplayString(value))
+        searchSet.SearchConditions.AddGroup(List[SearchCondition]([conditionValue]))
 
-### 🟠 Revit — `02_Scripts/02_Revit/`
+        # Second condition group (OR) — match by "Element" category
+        conditionOr = SearchCondition.HasPropertyByDisplayName("Element", "Clash Test Code")
+        conditionValueOr = conditionOr.EqualValue(VariantData.FromDisplayString(value))
+        searchSet.SearchConditions.AddGroup(List[SearchCondition]([conditionValueOr]))
 
-Scripts organized by API area:
-
-- **User Selection** — interactive picks (`PickObject`, `PickObjects`, rectangle region, custom `ISelectionFilter`).
-- **Selection Filters** — full coverage of Quick Filters (category, class, bounding box, element type, design option…), Slow Filters (parameter filter, solid intersection) and Logical combinators (AND/OR). Also includes special cases like getting doors/windows of a room.
-- **Edit & Create Objects** — walls, floors, family instances, transforms, move/rotate with `ElementTransformUtils`, title block repositioning.
-- **Units** — conversion utilities using `UnitUtils.ConvertToInternalUnits`.
-- **Grids, Levels & Phases** — create and position grids, levels, and relocate annotation bubbles.
-- **Views** — activate views, insert dependent views.
-- **TaskDialog** — chained multi-step dialogs.
-- **Geometry** — solid intersection utilities.
-
-Example — collecting all walls in the document:
-```python
-walls = FilteredElementCollector(doc)\
-    .OfCategory(BuiltInCategory.OST_Walls)\
-    .WhereElementIsNotElementType()\
-    .ToElements()
+        # Create the SelectionSet and add it to the document
+        instance = SelectionSet(searchSet)
+        instance.DisplayName = value
+        selectionSets.AddCopy(instance)
 ```
 
 ---
@@ -186,5 +173,5 @@ irm https://raw.githubusercontent.com/rafa2403nunez-droid/PyNetBridge/main/insta
 <p align="center">
   Developed by <b>RAEN Digital Tools</b>
   <br/><br/>
-  <img src="https://github.com/rafa2403nunez-droid/PyNet/blob/main/Assets/RAENDigitalTools.png" alt="RAEN Digital Tools" width="200">
+  <img src="https://github.com/rafa2403nunez-droid/PyNetLibrary/blob/main/Assets/RAENDigitalTools.png" alt="RAEN Digital Tools" width="200">
 </p>
