@@ -26,6 +26,13 @@ Scripts run via **Python.NET** (CPython 3.10+ + `pythonnet` — not IronPython).
 - Use `List[T]` from `System.Collections.Generic` when passing collections to .NET methods.
 - All UI dialogs use `System.Windows.Forms.MessageBox`.
 - Wrap Revit write operations in a `Transaction` or `TransactionManager`.
+* **Python / IronPython**  
+* **Autodesk Navisworks API**  
+* **Autodesk Revit API**
+* **Autodesk Civil 3D API / AutoCAD API**  
+* **Autodesk Platform Services (APS)**  
+* **Bentley Microstation API**  
+* **Bentley OpenRoads API**  
 
 ---
 
