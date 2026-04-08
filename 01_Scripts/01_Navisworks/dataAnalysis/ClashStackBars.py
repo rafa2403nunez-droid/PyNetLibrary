@@ -35,6 +35,7 @@ clr.AddReference("Raen.Navisworks.Pynet.2024")
 from Raen.Navisworks.Pynet.Utils import CastUtils  # type: ignore
 
 from Autodesk.Navisworks.Api import Application 
+from Autodesk.Navisworks.Api.Clash import DocumentClash, ClashResult
 document = Application.ActiveDocument
 
 #endregion
