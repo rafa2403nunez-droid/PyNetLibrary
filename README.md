@@ -318,7 +318,7 @@ search.Selection.SelectAll()
 
 Have questions about installation, configuration, or usage? Check the full FAQ page:
 
-👉 [PyNet FAQs](https://github.com/rafa2403nunez-droid/PyNet/wiki/FAQs)
+👉 [PyNet FAQs](https://github.com/rafa2403nunez-droid/PyNet/wiki/PyNET-FAQs)
 
 ---
 
