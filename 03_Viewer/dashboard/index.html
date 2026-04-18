@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIM Coordination Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">BIM Coordination Dashboard</h1>
+    <p class="subtitle" id="subtitle">Loading...</p>
+
+    <div class="cards-row" id="cards"></div>
+
+    <div class="main-grid">
+      <div class="panel viewer-panel">
+        <iframe
+          id="bim-viewer"
+          src=""
+          class="viewer-frame"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+        ></iframe>
+      </div>
+      <div class="side-panel">
+        <div class="panel chart-panel">
+          <div id="pie-chart"></div>
+        </div>
+        <div class="panel chart-panel">
+          <div id="bar-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel table-section">
+      <h2 class="section-title">Clash Details</h2>
+      <table id="clash-table">
+        <thead>
+          <tr>
+            <th>Clash</th>
+            <th>Test</th>
+            <th>Status</th>
+            <th>Distance (m)</th>
+            <th>Element A</th>
+            <th>ID A</th>
+            <th>Element B</th>
+            <th>ID B</th>
+          </tr>
+        </thead>
+        <tbody id="clash-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
