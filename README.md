@@ -453,8 +453,9 @@ python server\serve.py --ifc-dir "C:\path\to\ifcs" --port 8080
 
 ---
 
+© 2026 RAEN Digital Tools. Todos los derechos reservados.
+Obra inscrita en el Registro de la Propiedad Intelectual de la Comunidad de Madrid.
+
 <p align="center">
-  Developed by <b>RAEN Digital Tools</b>
-  <br/><br/>
   <img src="https://github.com/rafa2403nunez-droid/PyNetLibrary/blob/main/Assets/RAENDigitalTools.png" alt="RAEN Digital Tools" width="200">
 </p>
