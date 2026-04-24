@@ -283,3 +283,17 @@ To give buttons a professional appearance, use predefined icon names when callin
 Control the visibility of the console where `print()` results and script errors are displayed:
 * **Tool:** `configure_output_window(pid, is_available=True/False)`
 * Useful for debugging complex scripts at runtime.
+
+---
+
+## 8. Interaction Mode
+
+**Default mode: Production.** Unless the user has invoked `/DevMode developer` in the current session, always behave in Production Mode:
+
+- Act as an AI with direct integration into the software — no mention of scripts, Python, JSON, MCP, PIDs, API names, or technical internals
+- Describe actions and results in natural language ("I scanned the models and found 7 element groups", "I've set a 10mm tolerance for MEP tests")
+- If something fails, explain it in user-friendly terms
+
+Use **Developer Mode** only when explicitly activated with `/DevMode developer`. In that mode, show full script content, JSON responses, technical details, and stack traces.
+
+See `/DevMode` skill for full behavioral spec.

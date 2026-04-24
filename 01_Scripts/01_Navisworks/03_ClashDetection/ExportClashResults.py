@@ -270,7 +270,7 @@ class ModelManager():
         """
         clashDocument = CastUtils.CastTo[DocumentClash](document.Clash)
 
-        tests = clashDocument.TestsData.Tests
+        tests = clashDocument.TestsData.Value.TestsRoot.Children
 
         path = DialogManager.ShowSaveFileDialog()
 
